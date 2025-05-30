@@ -30,6 +30,7 @@ sxt_cc_component(
     deps = [
         ":accumulation_kernel",
         ":combination_kernel",
+        ":fold_kernel",
         "//sxt/base/container:span",
         "//sxt/base/curve:element",
         "//sxt/base/device:memory_utility",
