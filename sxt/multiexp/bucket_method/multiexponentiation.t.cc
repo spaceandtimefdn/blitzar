@@ -199,3 +199,67 @@ TEST_CASE("we can compute multiexponentiations with exponent sequences") {
     REQUIRE(fut.value()[0] == 2u * 12u);
   }
 }
+
+// Max chunk size is currently 1<<20 in mtxbk::accumulate_buckets_impl
+TEST_CASE("we can compute a multiexponentiation with elements over max chunk size") {
+  const size_t num_outputs = 1;
+  std::array<size_t, 2> num_elements_array = {(1 << 20) + 1, (1 << 21) + 1};
+
+  std::vector<const uint8_t*> exponents;
+
+  for (const auto& num_elements : num_elements_array) {
+    std::vector<bascrv::element97> generators(num_elements, 1u);
+
+    std::vector<uint8_t> scalar_data(num_elements * 32, 0);
+    for (size_t i = 0; i < num_elements; ++i) {
+      scalar_data[i * 32] = 1;
+    }
+
+    std::vector<bascrv::element97> res(num_outputs);
+
+    exponents.clear();
+    for (size_t i = 0; i < num_outputs; ++i) {
+      exponents.push_back(scalar_data.data());
+    }
+
+    auto fut = multiexponentiate<bascrv::element97>(res, generators, exponents);
+    xens::get_scheduler().run();
+    REQUIRE(fut.ready());
+
+    const auto expected = bascrv::element97(num_elements);
+    for (size_t i = 0; i < num_outputs; ++i) {
+      REQUIRE(res[i] == expected);
+    }
+  }
+}
+
+// Max chunk size is currently 1<<20 in mtxbk::accumulate_buckets_impl
+TEST_CASE("we can compute a multiexponentiation with multiple outputs over max chunk size") {
+  std::array<size_t, 4> num_outputs_array = {1 << 3, 1 << 4, 1 << 5, 1 << 6};
+  const size_t num_elements = (1 << 17) + 1;
+
+  std::vector<const uint8_t*> exponents;
+  std::vector<bascrv::element97> generators(num_elements, 1u);
+  std::vector<uint8_t> scalar_data(num_elements * 32, 0);
+  for (size_t i = 0; i < num_elements; ++i) {
+    scalar_data[i * 32] = 1;
+  }
+
+  for (const auto& num_outputs : num_outputs_array) {
+    std::vector<bascrv::element97> res(num_outputs);
+
+    exponents.clear();
+    for (size_t i = 0; i < num_outputs; ++i) {
+      exponents.push_back(scalar_data.data());
+    }
+
+    auto fut = multiexponentiate<bascrv::element97>(res, generators, exponents);
+    xens::get_scheduler().run();
+    REQUIRE(fut.ready());
+
+    const auto expected = bascrv::element97(num_elements);
+    for (size_t i = 0; i < num_outputs; ++i) {
+      REQUIRE(res[i] == expected);
+    }
+  }
+}
