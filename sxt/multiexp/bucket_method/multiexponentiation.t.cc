@@ -200,10 +200,14 @@ TEST_CASE("we can compute multiexponentiations with exponent sequences") {
   }
 }
 
-// Max chunk size is currently 1<<20 in mtxbk::accumulate_buckets_impl
+// Max chunk size in mtxbk::accumulate_buckets_impl is currently 1<<20.
+namespace {
+constexpr size_t max_chunk_size = 1 << 20;
+}
+
 TEST_CASE("we can compute a multiexponentiation with elements over max chunk size") {
   const size_t num_outputs = 1;
-  std::array<size_t, 2> num_elements_array = {(1 << 20) + 1, (1 << 21) + 1};
+  std::array<size_t, 2> num_elements_array = {max_chunk_size + 1, max_chunk_size * 2 + 1};
 
   std::vector<const uint8_t*> exponents;
 
@@ -233,8 +237,9 @@ TEST_CASE("we can compute a multiexponentiation with elements over max chunk siz
   }
 }
 
-// Max chunk size is currently 1<<20 in mtxbk::accumulate_buckets_impl
 TEST_CASE("we can compute a multiexponentiation with multiple outputs over max chunk size") {
+  // num_outputs_array + num_elements is chosen to ensure that the total number of elements exceeds
+  // the max_chunk_size.
   std::array<size_t, 4> num_outputs_array = {1 << 3, 1 << 4, 1 << 5, 1 << 6};
   const size_t num_elements = (1 << 17) + 1;
 
