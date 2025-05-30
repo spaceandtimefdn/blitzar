@@ -78,6 +78,20 @@ sxt_cc_component(
 )
 
 sxt_cc_component(
+    name = "fold_kernel",
+    test_deps = [
+        "//sxt/base/curve:example_element",
+        "//sxt/base/device:synchronization",
+        "//sxt/base/test:unit_test",
+        "//sxt/memory/management:managed_array",
+        "//sxt/memory/resource:managed_device_resource",
+    ],
+    deps = [
+        "//sxt/base/curve:element",
+    ],
+)
+
+sxt_cc_component(
     name = "multiexponentiation",
     test_deps = [
         "//sxt/base/curve:example_element",
