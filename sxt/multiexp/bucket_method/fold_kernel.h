@@ -27,8 +27,8 @@ namespace sxt::mtxbk {
 /**
  * This kernel computes the left fold of partial bucket sums to produce the final bucket sums.
  *
- * The kernel processes an array of partial bucket sums, where each thread performs a left 
- * fold operation on a specific segment of data identified by its (bucket_index, 
+ * The kernel processes an array of partial bucket sums, where each thread performs a left
+ * fold operation on a specific segment of data identified by its (bucket_index,
  * bucket_group_index, output_index) coordinates. The fold operation combines multiple partial
  * results using element-wise addition.
  *
