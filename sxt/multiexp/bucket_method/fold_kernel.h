@@ -27,34 +27,12 @@ namespace sxt::mtxbk {
 /**
  * This kernel computes the left fold of partial bucket sums to produce the final bucket sums.
  *
- * The kernel processes a multi-dimensional array of partial bucket sums, where each thread
- * performs a left fold operation on a specific segment of data identified by its (bucket_index,
+ * The kernel processes an array of partial bucket sums, where each thread performs a left 
+ * fold operation on a specific segment of data identified by its (bucket_index, 
  * bucket_group_index, output_index) coordinates. The fold operation combines multiple partial
  * results using element-wise addition.
  *
- * Memory layout:
- * - partial_bucket_sums: Array containing all partial sums, organized as multiple "folds" of data
- *   where each fold has size out_size
- * - out: Output array of size out_size that will contain the folded results
- *
- * Parameters:
- * @param[out] out                     Destination array for the folded results
- * @param[in]  partial_bucket_sums     Source array containing partial bucket sums to be folded
- * @param[in]  out_size                Size of the output array (elements)
- * @param[in]  partial_bucket_sum_size Total size of the partial bucket sums array (elements)
- *
- * Thread organization:
- * - Each thread is responsible for folding one specific element
- * - Thread coordinates: (blockIdx.x, threadIdx.x, blockIdx.y) map to (bucket_index,
- * bucket_group_index, output_index)
- * - The kernel should be launched with a grid of dim3(bucket_group_size, num_outputs, 1) and
- *   blockDim of num_bucket_groups
- *
- * Preconditions:
- * - partial_bucket_sum_size must be greater than 0
- * - out_size must be greater than 0
- * - partial_bucket_sum_size must be greater than or equal to out_size
- * - partial_bucket_sum_size must be evenly divisible by out_size
+ * out[index] = sum(partial_bucket_sums[index + i * out_size]) for i in [0, num_of_folds)
  */
 template <bascrv::element T>
 __global__ void segmented_left_fold_partial_bucket_sums(T* out, T* partial_bucket_sums,
