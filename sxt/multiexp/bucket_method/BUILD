@@ -30,6 +30,7 @@ sxt_cc_component(
     deps = [
         ":accumulation_kernel",
         ":combination_kernel",
+        ":fold_kernel",
         "//sxt/base/container:span",
         "//sxt/base/curve:element",
         "//sxt/base/device:memory_utility",
@@ -74,6 +75,20 @@ sxt_cc_component(
         "//sxt/base/container:span",
         "//sxt/base/curve:element",
         "//sxt/base/error:assert",
+    ],
+)
+
+sxt_cc_component(
+    name = "fold_kernel",
+    test_deps = [
+        "//sxt/base/curve:example_element",
+        "//sxt/base/device:synchronization",
+        "//sxt/base/test:unit_test",
+        "//sxt/memory/management:managed_array",
+        "//sxt/memory/resource:managed_device_resource",
+    ],
+    deps = [
+        "//sxt/base/curve:element",
     ],
 )
 

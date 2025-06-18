@@ -36,6 +36,7 @@
 #include "sxt/memory/resource/pinned_resource.h"
 #include "sxt/multiexp/bucket_method/accumulation_kernel.h"
 #include "sxt/multiexp/bucket_method/combination_kernel.h"
+#include "sxt/multiexp/bucket_method/fold_kernel.h"
 
 namespace sxt::mtxbk {
 //--------------------------------------------------------------------------------------------------
@@ -153,9 +154,10 @@ xena::future<> accumulate_buckets_impl(basct::span<T> bucket_sums, basct::cspan<
   memr::async_device_resource resource{stream};
   memmg::managed_array<T> partial_bucket_sums_dev{partial_bucket_sums.size(), &resource};
   basdv::async_copy_host_to_device(partial_bucket_sums_dev, partial_bucket_sums, stream);
-  combine_partial_bucket_sums<<<dim3(bucket_group_size, num_outputs, 1), num_bucket_groups, 0,
-                                stream>>>(bucket_sums.data(), partial_bucket_sums_dev.data(),
-                                          num_chunks);
+  segmented_left_fold_partial_bucket_sums<<<dim3(bucket_group_size, num_outputs, 1),
+                                            num_bucket_groups, 0, stream>>>(
+      bucket_sums.data(), partial_bucket_sums_dev.data(), bucket_sums.size(),
+      partial_bucket_sums_dev.size());
   co_await xendv::await_stream(stream);
 }
 
