@@ -53,7 +53,7 @@
 </div>
 
 #### Background
-Blitzar was created by the core cryptography team at [Space and Time](https://www.spaceandtime.io/) to accelerate Proof of SQL, a novel zero-knowledge proof for SQL operations. After surveying our options for a GPU acceleration framework, we realized that Proof of SQL needed something better… so we built Blitzar. Now, Proof of SQL can execute analytic queries on million-row tables in less than a second, and it’s only getting faster.
+Blitzar was created by the core cryptography team at [Space and Time](https://www.spaceandtime.io/) to accelerate Proof of SQL, a novel zero-knowledge proof for SQL operations. After surveying our options for a GPU acceleration framework, we realized that Proof of SQL needed something better… so we built Blitzar. Now, Proof of SQL can execute analytic queries on 1M+ rows in less than a second, and it’s only getting faster.
 
 We’ve open-sourced Blitzar to provide the Web3 community with a faster and more
 robust framework for building GPU-accelerated ZK proofs. We’re excited to open
@@ -67,11 +67,11 @@ Blitzar is a C++ library for accelerating cryptographic zero-knowledge proof alg
 
 The library provides
 
-* Functions for doing group operations on [Curve-25519](https://en.wikipedia.org/wiki/Curve25519) and [Ristretto25519](https://ristretto.group/) elements.
+* Functions for doing group operations on [Curve-25519](https://en.wikipedia.org/wiki/Curve25519), [Ristretto25519](https://ristretto.group/), [bls12-381 G1](https://electriccoin.co/blog/new-snark-curve/), [bn254 G1](https://hackmd.io/@jpw/bn254) and [Grumpkin](https://hackmd.io/@aztec-network/B19AA8812#Curve-cycles) elements.
 * An implementation of [Inner Product Argument Protocol](https://eprint.iacr.org/2017/1066.pdf) for producing and verifying a compact proof of the inner product of two vectors.
 * A sys-crate and bindings to make commitment computations usable from [Rust](https://github.com/spaceandtimelabs/blitzar-rs).
 
-The library is adopted from code in [libsodium](https://github.com/jedisct1/libsodium) and extends libsodium's cryptographic functions to support CUDA so that they are usable on GPUs.
+The library is adopted from code in the [libsodium](https://github.com/jedisct1/libsodium) and [zkcrypto](https://github.com/zkcrypto/bls12_381) projects. It extends both project's cryptographic functions to support CUDA so that they are usable on GPUs.
 
 **WARNING**: This project has not undergone a security audit and is NOT ready
 for production use.
@@ -91,8 +91,8 @@ Although the primary goal of this library is to provide GPU acceleration for cry
 
 | Backend            | Implementation                                             | Target Hardware             |
 | :---               | :---                                                       | :---                        |
-| `cpu`             | Serial      | x86 capable CPUs |
-| `gpu`             | Parallel   | Nvidia CUDA capable GPUs
+| `cpu`              | Serial                                                     | x86 capable CPUs            |
+| `gpu`              | Parallel                                                   | Nvidia CUDA capable GPUs    |
 
 
 ## Cryptographic Primitives
@@ -112,7 +112,7 @@ Note: we interchangeably use the terms "multi-scalar multiplication" and "multie
 
 The Blitzar implementation allows for computation of multiple, potentially different length, MSMs simultaneously. Additionally, either built-in, precomputed, generators $g_n$ can be used, or they can be provided as needed.
 
-Currently, Blitzar supports Curve25519 as the group. We're always working to expand the curves that we support, so check back for updates.
+Currently, Blitzar supports group elements from the Curve25519, bls12-381 G1, bn254-381 G1, and Grumpkin curves.
 
 #### Inner Product Argument
 
@@ -148,7 +148,7 @@ Benchmarks are run against four different types of GPU:
 <details open>
 <summary>Multi-Scalar Multiplication / Generalized Pedersen Commitment Results:</summary>
 
-The subsequent outcomes are derived from the preceding benchmark execution of the pedersen commitment, during which the number of sequences, bytes per element, sequence length, and GPU type were varied.
+The subsequent outcomes are derived from the preceding benchmark execution of the Pedersen commitment, during which the number of sequences, bytes per element, sequence length, and GPU type were varied.
 
 ![Multiexponentiation Benchmarks](https://github.com/spaceandtimelabs/blitzar/blob/assets/benchmark/multiexponentiation_seconds.png)
 
