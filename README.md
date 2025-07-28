@@ -53,7 +53,7 @@
 </div>
 
 #### Background
-Blitzar was created by the core cryptography team at [Space and Time](https://www.spaceandtime.io/) to accelerate Proof of SQL, a novel zero-knowledge proof for SQL operations. After surveying our options for a GPU acceleration framework, we realized that Proof of SQL needed something better… so we built Blitzar. Now, Proof of SQL can execute analytic queries on million-row tables in less than a second, and it’s only getting faster.
+Blitzar was created by the core cryptography team at [Space and Time](https://www.spaceandtime.io/) to accelerate Proof of SQL, a novel zero-knowledge proof for SQL operations. After surveying our options for a GPU acceleration framework, we realized that Proof of SQL needed something better… so we built Blitzar. Now, Proof of SQL can execute analytic queries on 1M+ rows in less than a second, and it’s only getting faster.
 
 We’ve open-sourced Blitzar to provide the Web3 community with a faster and more
 robust framework for building GPU-accelerated ZK proofs. We’re excited to open
