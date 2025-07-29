@@ -73,9 +73,6 @@ The library provides
 
 The library is adopted from code in the [libsodium](https://github.com/jedisct1/libsodium) and [zkcrypto](https://github.com/zkcrypto/bls12_381) projects. It extends both project's cryptographic functions to support CUDA so that they are usable on GPUs.
 
-**WARNING**: This project has not undergone a security audit and is NOT ready
-for production use.
-
 #### Installation
 We provide prebuilt binaries for glibc-based, x86-64 linux distributions.
 
