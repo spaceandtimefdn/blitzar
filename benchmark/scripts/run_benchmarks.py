@@ -8,8 +8,12 @@ import argparse
 def run_command(cmd):
     """Run a shell command and print output"""
     print(f"Running: {' '.join(cmd)}")
-    subprocess.run(cmd, check=True)
-
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Command '{' '.join(cmd)}' failed with return code {e.returncode}")
+        print(f"Output: {e.output.decode('utf-8') if e.output else 'No output'}")
+        sys.exit(1)
 
 def main():
     # Set up argument parsing
