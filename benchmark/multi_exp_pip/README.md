@@ -5,7 +5,7 @@ Benchmarking for a multi-exponentiation using an accessor to precomputed sums of
 - `bn254 G1`
 - `grumpkin`
 
-## Usage
+## Running the benchmark
 ```sh
 bazel run -c opt //benchmark/multi_exp_pip:benchmark <curve> <n> <num_samples> <num_outputs> <element_num_bytes> <verbose>
 ```

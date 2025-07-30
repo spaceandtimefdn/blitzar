@@ -1,23 +1,7 @@
-# Benchmarks for the multiproduct computation
-
-## Description
-
-In this benchmark, we compare both the naive and the pippenger multiproduct implementation.
+# multiprod1
+Benchmarks for the multiproduct computation that compare both the naive and the [Pippenger multiproduct](https://cacr.uwaterloo.ca/techreports/2010/cacr2010-26.pdf) implementation for Curve25519 elements.
 
 ## Running the benchmark
-
 ```
-benchmark/multiprod1/benchmark.sh <use_naive>
-
-# `use_naive` must be 0 or 1. When set to 1, the naive multiproduct is used. When set to 0, the Pippenger multiproduct is used.
+bazel run -c opt //benchmark/multiprod1:benchmark <use_naive> <sequence_length> <num_sequences> <max_num_inputs> <num_samples> <verbose> 
 ```
-
-Example:
-
-```
-benchmark/multiprod1/benchmark.sh 0
-```
-
-During this execution, some files are generated in the `benchmark/multiprod1/.results/` directory.
-
-For more information regarding the Pippenger multiproduct, check [here](https://cacr.uwaterloo.ca/techreports/2010/cacr2010-26.pdf).
