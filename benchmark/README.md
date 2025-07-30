@@ -2,14 +2,17 @@
 
 ## Description
 
-Given the number of each commitment length, the total number of commitments, and the number of bytes used to represent data elements, we compute each commitment sequence, using for that curve25519 and ristretto group operations. The data elements are randomly generated (in a deterministic way, given that the same seed is always provided).
+Given the number of each commitment length, the total number of commitments, and the number of bytes used to represent data elements, we compute each commitment sequence, using for that Curve25519 and Ristretto group operations. The data elements are randomly generated (in a deterministic way, given that the same seed is always provided).
 
 ## Running the benchmarks
 
-To run the whole benchmark on the GPU (update accordingly to use CPU), execute:
+To run the whole benchmark suite from outside of the NIX development shell execute:
 
 ```
-docker run --rm -e TEST_TMPDIR=/root/.cache_bazel -v blitzar/benchmark/multi_commitment:/root/.cache_bazel -v "$PWD":/src -w /src --gpus all --privileged -it joestifler/blitzar:7.0 benchmark/multi_commitment/scripts/run_benchmark.py --backend gpu --output-dir benchmark/multi_commitment/.proof_results --force-rerun-bench 1 --run-bench-callgrind 1 --run-bench 1
+nix develop --command python3 ./benchmark/scripts/run_benchmarks.py <cpu|gpu>
 ```
 
-Some files are generated in this process. They can be found on `benchmark/multi_commitment/.proof_results/` directory.
+From inside the NIX development shell execute:
+```
+python3 ./benchmark/scripts/run_benchmarks.py <cpu|gpu>
+```
