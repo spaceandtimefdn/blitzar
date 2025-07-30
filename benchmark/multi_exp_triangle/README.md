@@ -1,4 +1,4 @@
-# multi_exp_pip
+# multi_exp_triangle
 Benchmarking for a multi-exponentiation of varying lengths in a triangular structure using an 
 accessor to precomputed sums of partition groups. Runs benchmarks on the following curve elements:
 - `curve25519`
@@ -6,7 +6,7 @@ accessor to precomputed sums of partition groups. Runs benchmarks on the followi
 - `bn254 G1`
 - `grumpkin`
 
-## Usage
+## Running the benchmark
 ```sh
 bazel run -c opt //benchmark/multi_exp_triangle:benchmark <curve> <n> <num_samples> <num_outputs> <element_num_bytes> <verbose>
 ```
