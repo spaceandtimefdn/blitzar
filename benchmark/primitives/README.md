@@ -3,8 +3,10 @@ Currently only supports benchmarks for addition with `bls12-381` curve elements.
 
 This benchmark is similar to the Icicle's [example/multiply](https://github.com/ingonyama-zk/icicle/tree/40309329fbf6c5fc7e77d629c72b4a3d28036444/examples/c%2B%2B/multiply), but updated to measure curve addition, field addition, and field multiplication.
 
-## Usages
-`bazel run -c opt //benchmark/primitives:benchmark <curve> <op> <n_elements> <repetitions> <optional - n_threads> <optional - n_executions>`
+## Running the benchmark
+```
+bazel run -c opt //benchmark/primitives:benchmark <curve> <op> <n_elements> <repetitions> <optional - n_threads> <optional - n_executions>
+```
 
 - `curve`: specifies the curve. Currently only supports `bls12_381`
 - `op`: specifies what operations to target, either `curve` or `field`
