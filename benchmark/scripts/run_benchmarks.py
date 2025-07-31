@@ -74,6 +74,25 @@ def main():
         ]
         run_command(cmd)
 
+    # Sumcheck benchmark
+    sumcheck_fields = ["curve25519", "bn254"]
+    sumcheck_n = [1048576, 2097152, 4194304] # [2**20, 2**21, 2**22]
+    sumcheck_degree = [3]
+    sumcheck_num_products = [2]
+    sumcheck_num_samples = [5]
+
+    print("Running sumcheck benchmarks...")
+    for field in sumcheck_fields:
+        for n in sumcheck_n:
+            for degree in sumcheck_degree:
+                for num_products in sumcheck_num_products:
+                    for num_samples in sumcheck_num_samples:
+                        cmd = [
+                            "bazel", "run", "-c", "opt", "//benchmark/sumcheck:benchmark", "--",
+                            str(field), str(n), str(degree), str(num_products), str(num_samples)
+                        ]
+                        run_command(cmd)
+
 
 if __name__ == "__main__":
     main()
