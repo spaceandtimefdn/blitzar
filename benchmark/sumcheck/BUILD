@@ -13,6 +13,8 @@ sxt_cc_benchmark(
         "//sxt/base/num:fast_random_number_generator",
         "//sxt/execution/async:future",
         "//sxt/execution/schedule:scheduler",
+        "//sxt/fieldgk/random:element",
+        "//sxt/fieldgk/realization:field",
         "//sxt/memory/management:managed_array",
         "//sxt/proof/sumcheck:chunked_gpu_driver",
         "//sxt/proof/sumcheck:cpu_driver",
