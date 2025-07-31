@@ -22,6 +22,7 @@ def main():
     args = parser.parse_args()
 
     # Define benchmark parameters
+    curves = ["curve25519", "bls12_381", "bn254", "grumpkin"]
     sizes = [10000, 100000, 1000000]
     num_samples = 10
     num_commitments = [1, 10]
@@ -29,16 +30,43 @@ def main():
     verbose = 0
 
     # Multi commitment benchmark
-    for commitment in num_commitments:
-        for nbytes in element_nbytes:
-            for size in sizes:
-                cmd = [
-                    "bazel", "run", "-c", "opt", "//benchmark/multi_commitment:benchmark", "--",
-                    args.device, str(size), str(num_samples), str(commitment), str(nbytes), str(verbose)
-                ]
-                run_command(cmd)
+    print("Running multi commitment benchmarks...")
+    for curve in curves:
+        for commitment in num_commitments:
+            for nbytes in element_nbytes:
+                for size in sizes:
+                    cmd = [
+                        "bazel", "run", "-c", "opt", f"//benchmark/multi_commitment:benchmark", "--",
+                        args.device, str(curve), str(size), str(num_samples), str(commitment), str(nbytes), str(verbose)
+                    ]
+                    run_command(cmd)
+
+    # Multi exponentiation Pippenger benchmark
+    print("Running multi exponentiation Pippenger benchmarks...")
+    for curve in curves:
+        for commitment in num_commitments:
+            for nbytes in element_nbytes:
+                for size in sizes:
+                    cmd = [
+                        "bazel", "run", "-c", "opt", f"//benchmark/multi_exp_pip:benchmark", "--",
+                        str(curve), str(size), str(num_samples), str(commitment), str(nbytes), str(verbose)
+                    ]
+                    run_command(cmd)
+
+    # Multi exponentiation triangle benchmark
+    print("Running multi exponentiation triangle benchmarks...")
+    for curve in curves:
+        for commitment in num_commitments:
+            for nbytes in element_nbytes:
+                for size in sizes:
+                    cmd = [
+                        "bazel", "run", "-c", "opt", f"//benchmark/multi_exp_tri:benchmark", "--",
+                        str(curve), str(size), str(num_samples), str(commitment), str(nbytes), str(verbose)
+                    ]
+                    run_command(cmd)
 
     # Inner product proof benchmark
+    print("Running inner product proof benchmarks...")
     for size in sizes:
         cmd = [
             "bazel", "run", "-c", "opt", "//benchmark/inner_product_proof:benchmark", "--",
