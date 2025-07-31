@@ -78,7 +78,7 @@ def main():
     sumcheck_fields = ["curve25519", "bn254"]
     sumcheck_n = [1048576, 2097152, 4194304] # [2**20, 2**21, 2**22]
     sumcheck_degree = [3]
-    sumcheck_num_products = [2]
+    sumcheck_num_products = [2, 10, 20, 100]
     sumcheck_num_samples = [5]
 
     print("Running sumcheck benchmarks...")
