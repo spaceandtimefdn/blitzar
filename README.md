@@ -133,34 +133,26 @@ This version of the inner product argument can be used in the context of a broad
 
 If there is a particular feature that you would like to see, please [reach out](https://github.com/spaceandtimelabs/blitzar/issues). Blitzar is a community-first project, and we want to hear from you.
 
-## Performance ([associated commit hash](https://github.com/spaceandtimelabs/blitzar/commit/a03f80bae30546c0b02d7e968056e3473be3a851))
+## Performance ([associated commit hash](https://github.com/spaceandtimefdn/blitzar/commit/7be4bdfc961e7f0b99b99bf22238380829a325d2))
 
 Benchmarks are run against four different types of GPU:
 
-* [Nvidia 3060](https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3060-3060ti/)
 * [Nvidia T4 - Standard_NC4as_T4_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/nct4-v3-series)
-* [Nvidia V100 - Standard_NC6s_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/ncv3-series)
+* [Nvidia T4 x4 - Standard_NC16as_T4_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/nct4-v3-series)
 * [Nvidia A100 - Standard_NC24ads_A100_v4](https://learn.microsoft.com/en-us/azure/virtual-machines/nc-a100-v4-series)
+* [Nvidia A100 x4 - Standard_NC96ads_A100_v4](https://learn.microsoft.com/en-us/azure/virtual-machines/nc-a100-v4-series)
 
 <details open>
 <summary>Multi-Scalar Multiplication / Generalized Pedersen Commitment Results:</summary>
 
 The subsequent outcomes are derived from the preceding benchmark execution of the Pedersen commitment, during which the number of sequences, bytes per element, sequence length, and GPU type were varied.
 
-![Multiexponentiation Benchmarks](https://github.com/spaceandtimelabs/blitzar/blob/assets/benchmark/multiexponentiation_seconds.png)
+![BN254 Multiexponentiation Benchmarks](https://github.com/spaceandtimefdn/blitzar/blob/assets/benchmark/bn254_blitzar_compute_commitments.png)
+![BLS12-381 Multiexponentiation Benchmarks](https://github.com/spaceandtimefdn/blitzar/blob/assets/benchmark/bls12_381_blitzar_compute_commitments.png)
+![Grumpkin Multiexponentiation Benchmarks](https://github.com/spaceandtimefdn/blitzar/blob/assets/benchmark/grumpkin_blitzar_compute_commitments.png)
+![Curve25519 Multiexponentiation Benchmarks](https://github.com/spaceandtimefdn/blitzar/blob/assets/benchmark/curve25519_blitzar_compute_commitments.png)
 
 </details>
-
-<details open>
-<summary>Inner Product Argument Results:</summary>
-
-The subsequent outcomes are derived from the preceding benchmark execution of the inner product, during which the number of elements and the type of GPU were changed.
-
-![Inner Product Benchmarks](https://github.com/spaceandtimelabs/blitzar/blob/assets/benchmark/innerprod_seconds.png)
-
-</details>
-
-
 
 ## Getting Started
 
