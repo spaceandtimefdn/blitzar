@@ -40,6 +40,7 @@
 using namespace sxt;
 
 struct params {
+  std::string field = "curve25519";
   unsigned n;
   unsigned degree;
   unsigned num_products;
@@ -47,33 +48,41 @@ struct params {
 };
 
 static bool read_params(params& p, int argc, char* argv[]) noexcept {
-  if (argc != 5) {
-    std::println("Usage: benchmark <n> <degree> <num_products> <num_samples>");
+  if (argc != 6) {
+    std::println("Usage: benchmark <scalar_field> <n> <degree> <num_products> <num_samples>");
     return false;
   }
 
   std::string_view s;
 
-  // n
+  // field
   s = {argv[1]};
+  if (s == "curve25519") {
+    p.field = "curve25519";
+  } else {
+    baser::panic("invalid scalar field: {}\n", s);
+  }
+
+  // n
+  s = {argv[2]};
   if (std::from_chars(s.begin(), s.end(), p.n).ec != std::errc{}) {
     baser::panic("invalid argument for n: {}\n", s);
   }
 
   // degree
-  s = {argv[2]};
+  s = {argv[3]};
   if (std::from_chars(s.begin(), s.end(), p.degree).ec != std::errc{}) {
     baser::panic("invalid argument for degree: {}\n", s);
   }
 
   // num_products
-  s = {argv[3]};
+  s = {argv[4]};
   if (std::from_chars(s.begin(), s.end(), p.num_products).ec != std::errc{}) {
     baser::panic("invalid argument for num_products: {}\n", s);
   }
 
   // num_samples
-  s = {argv[4]};
+  s = {argv[5]};
   if (std::from_chars(s.begin(), s.end(), p.num_samples).ec != std::errc{}) {
     baser::panic("invalid argument for num_samples: {}\n", s);
   }
@@ -81,36 +90,37 @@ static bool read_params(params& p, int argc, char* argv[]) noexcept {
   return true;
 }
 
-static void check_verifiy(basct::cspan<s25t::element> round_polynomials, unsigned round_degree,
+template <class U>
+static void check_verifiy(basct::cspan<U> round_polynomials, unsigned round_degree,
                           unsigned num_rounds) noexcept {
   prft::transcript base_transcript{"abc123"};
-  prfsk::reference_transcript<s25t::element> transcript{base_transcript};
-  memmg::managed_array<s25t::element> evaluation_point(num_rounds);
-  s25t::element expected_sum;
+  prfsk::reference_transcript<U> transcript{base_transcript};
+  memmg::managed_array<U> evaluation_point(num_rounds);
+  U expected_sum;
   prfsk::sum_polynomial_01(expected_sum, round_polynomials.subspan(0, round_degree + 1));
-  auto was_successful = prfsk::verify_sumcheck_no_evaluation<s25t::element>(
+  auto was_successful = prfsk::verify_sumcheck_no_evaluation<U>(
       expected_sum, evaluation_point, transcript, round_polynomials, round_degree);
   if (!was_successful) {
     baser::panic("verification failed");
   }
 }
 
-int main(int argc, char* argv[]) {
-  params p;
-  if (!read_params(p, argc, argv)) {
-    return -1;
-  }
+template <class U, typename GeneratorFunc>
+static void run_benchmark(params& p, GeneratorFunc generator_func) {
+  auto num_rounds = basn::ceil_log2(p.n);
 
   basn::fast_random_number_generator rng{1, 2};
 
   // mles
-  memmg::managed_array<s25t::element> mles(p.n * p.degree * p.num_products);
-  s25rn::generate_random_elements(mles, rng);
+  memmg::managed_array<U> mles(p.n * p.degree * p.num_products);
+  for (unsigned i = 0; i < mles.size(); ++i) {
+    generator_func(mles[i], rng);
+  }
 
   // product_table
-  memmg::managed_array<std::pair<s25t::element, unsigned>> product_table(p.num_products);
+  memmg::managed_array<std::pair<U, unsigned>> product_table(p.num_products);
   for (unsigned product_index = 0; product_index < p.num_products; ++product_index) {
-    s25rn::generate_random_element(product_table[product_index].first, rng);
+    generator_func(product_table[product_index].first, rng);
     product_table[product_index].second = p.degree;
   }
 
@@ -119,41 +129,79 @@ int main(int argc, char* argv[]) {
   std::iota(product_terms.begin(), product_terms.end(), 0);
 
   // benchmark
+  memmg::managed_array<U> polynomials((p.degree + 1u) * num_rounds);
+  memmg::managed_array<U> evaluation_point(num_rounds);
+  prft::transcript base_transcript{"abc123"};
+  prfsk::reference_transcript<U> transcript{base_transcript};
+  prfsk::chunked_gpu_driver<U> drv;
+
+  // initial run
+  {
+    auto fut = prfsk::prove_sum<U>(polynomials, evaluation_point, transcript, drv, mles,
+                                   product_table, product_terms, p.n);
+    xens::get_scheduler().run();
+    check_verifiy<U>(polynomials, p.degree, num_rounds);
+  }
+
+  // sample
+  std::vector<double> durations;
+  double mean_duration_compute = 0.0;
+  double elapse = 0.0;
+
+  for (unsigned i = 0; i < (p.num_samples + 1u); ++i) {
+    auto t1 = std::chrono::steady_clock::now();
+    auto fut = prfsk::prove_sum<U>(polynomials, evaluation_point, transcript, drv, mles,
+                                   product_table, product_terms, p.n);
+    xens::get_scheduler().run();
+    auto t2 = std::chrono::steady_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
+    if (i > 0) {
+      auto duration_compute = static_cast<double>(duration.count()) / 1e6;
+      durations.push_back(duration_compute);
+      elapse += duration_compute;
+      mean_duration_compute += duration_compute / p.num_samples;
+    }
+  }
+
+  double std_deviation = 0.0;
+
+  for (int i = 0; i < p.num_samples; ++i) {
+    std_deviation += pow(durations[i] - mean_duration_compute, 2.);
+  }
+
+  std_deviation = sqrt(std_deviation / p.num_samples);
+
+  std::println("compute duration (s): {:.4e}", elapse / p.num_samples);
+  std::println("compute std deviation (s): {:.4e}", std_deviation);
+  std::println("throughput (s): {:.4e}", p.n / (elapse / p.num_samples));
+  std::println("********************************************");
+}
+
+int main(int argc, char* argv[]) {
+  params p;
+  if (!read_params(p, argc, argv)) {
+    return -1;
+  }
+
   auto num_rounds = basn::ceil_log2(p.n);
+  std::println("===== benchmark results");
+  std::println("scalar field: {}", p.field);
   std::println("n = {}", p.n);
   std::println("num_rounds = {}", num_rounds);
   std::println("degree = {}", p.degree);
   std::println("num_products = {}", p.num_products);
   std::println("num_samples = {}", p.num_samples);
-  memmg::managed_array<s25t::element> polynomials((p.degree + 1u) * num_rounds);
-  memmg::managed_array<s25t::element> evaluation_point(num_rounds);
-  prft::transcript base_transcript{"abc123"};
-  prfsk::reference_transcript<s25t::element> transcript{base_transcript};
-  prfsk::chunked_gpu_driver<s25t::element> drv;
+  std::println("********************************************");
 
-  // initial run
-  {
-    auto fut = prfsk::prove_sum<s25t::element>(polynomials, evaluation_point, transcript, drv, mles,
-                                               product_table, product_terms, p.n);
-    xens::get_scheduler().run();
-    check_verifiy(polynomials, p.degree, num_rounds);
+  if (p.field == "curve25519") {
+    auto generator = [](s25t::element& element, basn::fast_random_number_generator& rng) {
+      s25rn::generate_random_element(element, rng);
+    };
+    run_benchmark<s25t::element>(p, generator);
+  } else {
+    baser::panic("unsupported scalar field: {}", p.field);
   }
-
-  // sample
-  double elapse = 0;
-  for (unsigned i = 0; i < (p.num_samples + 1u); ++i) {
-    auto t1 = std::chrono::steady_clock::now();
-    auto fut = prfsk::prove_sum<s25t::element>(polynomials, evaluation_point, transcript, drv, mles,
-                                               product_table, product_terms, p.n);
-    xens::get_scheduler().run();
-    auto t2 = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-    if (i > 0) {
-      elapse += static_cast<double>(duration.count()) / 1.0e6;
-    }
-  }
-  std::println("average duration: {:.4e} seconds", elapse / p.num_samples);
-  std::println("average throughput: {:.4e} seconds", p.n / (elapse / p.num_samples));
 
   return 0;
 }
