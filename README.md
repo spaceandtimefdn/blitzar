@@ -142,8 +142,8 @@ Benchmarks are run against four different types of GPU:
 * [Nvidia A100 - Standard_NC24ads_A100_v4](https://learn.microsoft.com/en-us/azure/virtual-machines/nc-a100-v4-series)
 * [Nvidia A100 x4 - Standard_NC96ads_A100_v4](https://learn.microsoft.com/en-us/azure/virtual-machines/nc-a100-v4-series)
 
-<details open>
-<summary>Multi-Scalar Multiplication / Generalized Pedersen Commitment Results:</summary>
+<details>
+<summary>Expand to see the multi-scalar multiplication / generalized Pedersen commitment results</summary>
 
 The subsequent outcomes are derived from the preceding benchmark execution of the Pedersen commitment, during which the number of sequences, bytes per element, sequence length, and GPU type were varied.
 
