@@ -38,6 +38,13 @@
 #include "sxt/curve21/operation/double.h"
 #include "sxt/curve21/operation/neg.h"
 #include "sxt/curve21/type/element_p3.h"
+#include "sxt/curve_bng1/operation/add.h"
+#include "sxt/curve_bng1/operation/double.h"
+#include "sxt/curve_bng1/operation/neg.h"
+#include "sxt/curve_bng1/random/element_p2.h"
+#include "sxt/curve_bng1/type/conversion_utility.h"
+#include "sxt/curve_bng1/type/element_affine.h"
+#include "sxt/curve_bng1/type/element_p2.h"
 #include "sxt/memory/management/managed_array.h"
 #include "sxt/multiexp/base/exponent_sequence.h"
 #include "sxt/ristretto/base/byte_conversion.h"
@@ -117,6 +124,9 @@ struct params {
     if (curve_view == "curve25519") {
       curve = "curve25519";
       return;
+    } else if (curve_view == "bn254") {
+      curve = "bn254";
+      return;
     }
 
     std::cerr << "invalid curve: " << curve_view << "\n";
@@ -142,6 +152,17 @@ static void print_result(uint64_t num_commitments,
   // print the 32 bytes commitment results of each sequence
   for (size_t c = 0; c < num_commitments; ++c) {
     std::cout << c << ": " << commitments_per_sequence[c] << std::endl;
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+// print_result
+//--------------------------------------------------------------------------------------------------
+static void print_result(uint64_t num_commitments,
+                         memmg::managed_array<cn1t::element_affine> elements) noexcept {
+  size_t index = 0;
+  for (auto& e : elements) {
+    std::cout << index++ << ": {" << e.X << ", " << e.Y << "}" << "\n";
   }
 }
 
@@ -269,6 +290,13 @@ int main(int argc, char* argv[]) {
     };
 
     run_benchmark<c21t::element_p3, rstt::compressed_element>(p, generator);
+  } else if (p.curve == "bn254") {
+    auto generator = [](cn1t::element_p2& element, unsigned i) {
+      basn::fast_random_number_generator rng{i + 1, i + 2};
+      cn1rn::generate_random_element(element, rng);
+    };
+
+    run_benchmark<cn1t::element_p2, cn1t::element_affine>(p, generator);
   } else {
     std::cerr << "Unsupported curve: " << p.curve << "\n";
     return -1;
