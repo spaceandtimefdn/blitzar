@@ -4,7 +4,7 @@ version = "0.0.0" # DO NOT CHANGE
 edition = "2021"
 license = "Apache-2.0"
 description = "Rust bindings for the Blitzar library"
-repository = "https://github.com/spaceandtimelabs/blitzar"
+repository = "https://github.com/spaceandtimefdn/blitzar"
 keywords = ["gpu-cryptography", "gpu-crypto", "gpu-ristretto", "gpu-curve25519", "gpu-ristretto255"]
 readme = "README.md"
 
