@@ -35,7 +35,7 @@ jobs:
         run: TEST_TMPDIR=$HOME/.bazel_test nix develop --command bazel test //...
   
           # Note: There are some steps we need to our
-          # custom nix derivation from https://github.com/spaceandtimelabs/blitzar/pull/96
+          # custom nix derivation from https://github.com/spaceandtimefdn/blitzar/pull/96
           # to get compute sanitizer working.
           #
           # I'm disabling for now so that we can move forward with cuda 12.3

@@ -6,14 +6,14 @@
   <h1 align="center">Blitzar-sys Crate</h1>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimelabs/blitzar-rs/assets/logo_dark_background.png">
-  <source media="(prefers-color-scheme: light)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimelabs/blitzar-rs/assets/logo_light_background.png">
-  <img alt="Blitzar" width="200px" src="https://raw.githubusercontent.com/spaceandtimelabs/blitzar-rs/assets/logo_light_background.png">
+  <source media="(prefers-color-scheme: dark)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimefdn/blitzar-rs/assets/logo_dark_background.png">
+  <source media="(prefers-color-scheme: light)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimefdn/blitzar-rs/assets/logo_light_background.png">
+  <img alt="Blitzar" width="200px" src="https://raw.githubusercontent.com/spaceandtimefdn/blitzar-rs/assets/logo_light_background.png">
 </picture>
 
 <p align="center">
-  <a href="https://github.com/spaceandtimelabs/blitzar/actions/workflows/release.yml">
-    <img alt="Build State" src="https://github.com/spaceandtimelabs/blitzar/actions/workflows/release.yml/badge.svg">
+  <a href="https://github.com/spaceandtimefdn/blitzar/actions/workflows/release.yml">
+    <img alt="Build State" src="https://github.com/spaceandtimefdn/blitzar/actions/workflows/release.yml/badge.svg">
   </a>
 
   <a href="https://twitter.com/intent/follow?screen_name=spaceandtimedb">
@@ -24,7 +24,7 @@
     <img alt="Discord Server" src="https://img.shields.io/discord/953025874154893342?logo=discord">
   </a>
   
-  <a href="https://github.com/spaceandtimelabs/blitzar/blob/main/LICENSE">
+  <a href="https://github.com/spaceandtimefdn/blitzar/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg">
     </a>
   </a>
@@ -52,9 +52,9 @@
   <p align="center">
     Rust bindings for the Blitzar C++ library.
     <br />
-    <a href="https://github.com/spaceandtimelabs/blitzar/issues">Report Bug</a>
+    <a href="https://github.com/spaceandtimefdn/blitzar/issues">Report Bug</a>
     |
-    <a href="https://github.com/spaceandtimelabs/blitzar/issues">Request a Feature</a>
+    <a href="https://github.com/spaceandtimefdn/blitzar/issues">Request a Feature</a>
   </p>
 </div>
 
@@ -64,9 +64,9 @@ Blitzar was created by the core cryptography team at [Space and Time](https://ww
 
 #### Overview
 
-The `blitzar-sys` crate provides Rust bindings for the [Blitzar C++ Library](https://github.com/spaceandtimelabs/blitzar). The crate is used by Space and Time's companion crate, [`blitzar`](https://crates.io/crates/blitzar), that provides a High-Level Rust wrapper for accelerating cryptographic zero-knowledge proof algorithms on the CPU and GPU.
+The `blitzar-sys` crate provides Rust bindings for the [Blitzar C++ Library](https://github.com/spaceandtimefdn/blitzar). The crate is used by Space and Time's companion crate, [`blitzar`](https://crates.io/crates/blitzar), that provides a High-Level Rust wrapper for accelerating cryptographic zero-knowledge proof algorithms on the CPU and GPU.
 
-More information about the cryptographic primitives is available on the [Blitzar Github repo](https://github.com/spaceandtimelabs/blitzar). More information about the Rust bindings are available on the [`blitzar`](https://crates.io/crates/blitzar) crates.io page.
+More information about the cryptographic primitives is available on the [Blitzar Github repo](https://github.com/spaceandtimefdn/blitzar). More information about the Rust bindings are available on the [`blitzar`](https://crates.io/crates/blitzar) crates.io page.
 
 **WARNING**: This project has not undergone a security audit and is NOT ready for production use.
 
