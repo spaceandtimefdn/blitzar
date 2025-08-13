@@ -5,14 +5,14 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimelabs/blitzar-rs/assets/logo_dark_background.png">
-  <source media="(prefers-color-scheme: light)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimelabs/blitzar-rs/assets/logo_light_background.png">
-  <img alt="Blitzar" width="200px" src="https://raw.githubusercontent.com/spaceandtimelabs/blitzar-rs/assets/logo_light_background.png">
+  <source media="(prefers-color-scheme: dark)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimefdn/blitzar-rs/assets/logo_dark_background.png">
+  <source media="(prefers-color-scheme: light)" width="200px" srcset="https://raw.githubusercontent.com/spaceandtimefdn/blitzar-rs/assets/logo_light_background.png">
+  <img alt="Blitzar" width="200px" src="https://raw.githubusercontent.com/spaceandtimefdn/blitzar-rs/assets/logo_light_background.png">
 </picture>
 
 <p align="center">
-  <a href="https://github.com/spaceandtimelabs/blitzar/actions/workflows/release.yml">
-    <img alt="Build State" src="https://github.com/spaceandtimelabs/blitzar/actions/workflows/release.yml/badge.svg">
+  <a href="https://github.com/spaceandtimefdn/blitzar/actions/workflows/release.yml">
+    <img alt="Build State" src="https://github.com/spaceandtimefdn/blitzar/actions/workflows/release.yml/badge.svg">
   </a>
 
   <a href="https://twitter.com/intent/follow?screen_name=spaceandtimedb">
@@ -23,7 +23,7 @@
     <img alt="Discord Server" src="https://img.shields.io/discord/953025874154893342?logo=discord">
   </a>
 
-  <a href="https://github.com/spaceandtimelabs/blitzar/blob/main/LICENSE">
+  <a href="https://github.com/spaceandtimefdn/blitzar/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg">
     </a>
 
@@ -46,9 +46,9 @@
   <p align="center">
     Space and Time C++ library for accelerating cryptographic zero-knowledge proofs algorithms on the CPU and GPU.
     <br />
-    <a href="https://github.com/spaceandtimelabs/blitzar/issues">Report Bug</a>
+    <a href="https://github.com/spaceandtimefdn/blitzar/issues">Report Bug</a>
     |
-    <a href="https://github.com/spaceandtimelabs/blitzar/issues">Request a Feature</a>
+    <a href="https://github.com/spaceandtimefdn/blitzar/issues">Request a Feature</a>
   </p>
 </div>
 
@@ -63,13 +63,13 @@ the foundation for the next wave of lightning fast ZK proofs.
 #### Overview
 Blitzar is a C++ library for accelerating cryptographic zero-knowledge proof algorithms on the CPU and GPU.
 > **Note**  
-> This repo contains the C++ implementation along with cbindings and a Rust sys-crate. If you are using Rust, use the crate from the companion [blitzar-rs](https://github.com/spaceandtimelabs/blitzar-rs) repo.
+> This repo contains the C++ implementation along with cbindings and a Rust sys-crate. If you are using Rust, use the crate from the companion [blitzar-rs](https://github.com/spaceandtimefdn/blitzar-rs) repo.
 
 The library provides
 
 * Functions for doing group operations on [Curve-25519](https://en.wikipedia.org/wiki/Curve25519), [Ristretto25519](https://ristretto.group/), [bls12-381 G1](https://electriccoin.co/blog/new-snark-curve/), [bn254 G1](https://hackmd.io/@jpw/bn254) and [Grumpkin](https://hackmd.io/@aztec-network/B19AA8812#Curve-cycles) elements.
 * An implementation of [Inner Product Argument Protocol](https://eprint.iacr.org/2017/1066.pdf) for producing and verifying a compact proof of the inner product of two vectors.
-* A sys-crate and bindings to make commitment computations usable from [Rust](https://github.com/spaceandtimelabs/blitzar-rs).
+* A sys-crate and bindings to make commitment computations usable from [Rust](https://github.com/spaceandtimefdn/blitzar-rs).
 
 The library is adopted from code in the [libsodium](https://github.com/jedisct1/libsodium) and [zkcrypto](https://github.com/zkcrypto/bls12_381) projects. It extends both project's cryptographic functions to support CUDA so that they are usable on GPUs.
 
@@ -79,7 +79,7 @@ We provide prebuilt binaries for glibc-based, x86-64 linux distributions.
 Dependencies are statically linked and set to have internal linkage with [export maps](https://accu.org/journals/overload/15/79/wakeling_1372/) to ensure 
 portability. The only run-time dependency to use GPU acceleration is an up-to-date GPU driver.
 
-For most users, we recommend installing with cargo via [blitzar-rs](https://github.com/spaceandtimelabs/blitzar-rs).
+For most users, we recommend installing with cargo via [blitzar-rs](https://github.com/spaceandtimefdn/blitzar-rs).
 
 Alternatively, users that want to use the c api directly can download the shared library and header file from the github release.
 
@@ -131,7 +131,7 @@ This version of the inner product argument can be used in the context of a broad
 
 #### Other Features to Come
 
-If there is a particular feature that you would like to see, please [reach out](https://github.com/spaceandtimelabs/blitzar/issues). Blitzar is a community-first project, and we want to hear from you.
+If there is a particular feature that you would like to see, please [reach out](https://github.com/spaceandtimefdn/blitzar/issues). Blitzar is a community-first project, and we want to hear from you.
 
 ## Performance ([associated commit hash](https://github.com/spaceandtimefdn/blitzar/commit/7be4bdfc961e7f0b99b99bf22238380829a325d2))
 
@@ -208,7 +208,7 @@ nix develop
 cargo test --manifest-path rust/blitzar-sys/Cargo.toml
 ```
 
-Although possible, this sys-crate is not meant to be used directly by Rust users. Instead, consider using the [blitzar-rs](https://github.com/spaceandtimelabs/blitzar-rs), which is a high-level wrapper around this sys-crate.
+Although possible, this sys-crate is not meant to be used directly by Rust users. Instead, consider using the [blitzar-rs](https://github.com/spaceandtimefdn/blitzar-rs), which is a high-level wrapper around this sys-crate.
 
 Note: the shared library byproduct of the C++/CUDA code is automatically copied to the Rust sys-crate under the `rust/blitzar-sys/` directory.
 
@@ -216,7 +216,7 @@ Note: the shared library byproduct of the C++/CUDA code is automatically copied 
 
 ## Add to your project
 
-You can find release ready versions of this library under the [release page](https://github.com/spaceandtimelabs/blitzar/releases/). You can also build and test the library from source by following the instructions below.
+You can find release ready versions of this library under the [release page](https://github.com/spaceandtimefdn/blitzar/releases/). You can also build and test the library from source by following the instructions below.
 
 <details>
 
@@ -262,7 +262,7 @@ cargo test --manifest-path rust/tests/Cargo.toml
 
 ## Development Process
 
-The main branch is regularly built and tested, being the only source of truth. [Tags](https://github.com/spaceandtimelabs/blitzar/tags) are created regularly from automated semantic release executions. 
+The main branch is regularly built and tested, being the only source of truth. [Tags](https://github.com/spaceandtimefdn/blitzar/tags) are created regularly from automated semantic release executions. 
 
 #### Code format:
 
@@ -312,7 +312,7 @@ bazel run -c opt //benchmark/inner_product_proof:benchmark -- gpu 1000 5
 
 ## Contributing
 
-We're excited to open Blitzar to the community, but are not accepting community Pull Requests yet due to logistic reasons. However, feel free to contribute with any suggestion, idea, or bugfix on our [Issues](https://github.com/spaceandtimelabs/blitzar/issues) panel. Also, see [contribution guide](CONTRIBUTING.md).
+We're excited to open Blitzar to the community, but are not accepting community Pull Requests yet due to logistic reasons. However, feel free to contribute with any suggestion, idea, or bugfix on our [Issues](https://github.com/spaceandtimefdn/blitzar/issues) panel. Also, see [contribution guide](CONTRIBUTING.md).
 
 ## Community & support
 
@@ -324,4 +324,4 @@ This project is released under the [Apache 2 License](LICENSE).
   
 ## Rust crate
 
-This repo contains the C++ implementation along with cbindings and a Rust sys-crate. If you are using Rust, use the crate from the companion repo here: https://github.com/spaceandtimelabs/blitzar-rs.
+This repo contains the C++ implementation along with cbindings and a Rust sys-crate. If you are using Rust, use the crate from the companion repo here: https://github.com/spaceandtimefdn/blitzar-rs.
