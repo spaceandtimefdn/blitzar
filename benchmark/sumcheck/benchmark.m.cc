@@ -95,8 +95,8 @@ static bool read_params(params& p, int argc, char* argv[]) noexcept {
 }
 
 template <class U>
-static void check_verifiy(basct::cspan<U> round_polynomials, unsigned round_degree,
-                          unsigned num_rounds) noexcept {
+static void check_verify(basct::cspan<U> round_polynomials, unsigned round_degree,
+                         unsigned num_rounds) noexcept {
   prft::transcript base_transcript{"abc123"};
   prfsk::reference_transcript<U> transcript{base_transcript};
   memmg::managed_array<U> evaluation_point(num_rounds);
@@ -144,7 +144,7 @@ static void run_benchmark(params& p, GeneratorFunc generator_func) {
     auto fut = prfsk::prove_sum<U>(polynomials, evaluation_point, transcript, drv, mles,
                                    product_table, product_terms, p.n);
     xens::get_scheduler().run();
-    check_verifiy<U>(polynomials, p.degree, num_rounds);
+    check_verify<U>(polynomials, p.degree, num_rounds);
   }
 
   // sample
