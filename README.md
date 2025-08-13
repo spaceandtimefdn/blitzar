@@ -291,7 +291,7 @@ nix develop
 # - num_commitments: the number of commitments to generate.
 # - element_nbytes: the number of bytes of each element in the vector (exponent size).
 # - verbose: whether to print the results of each run.
-bazel run -c opt //benchmark/multi_commitment:benchmark gpu bn254 1000 10 1 32 0
+bazel run -c opt //benchmark/multi_commitment:benchmark -- gpu bn254 1000 5 1 32 1
 ```
 
 </details>
