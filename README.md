@@ -284,13 +284,14 @@ nix develop
 ```bash
 nix develop
 
-# Usage: benchmark <cpu|gpu> <n> <num_samples> <num_commitments> <element_nbytes> <verbose>
+# Usage: benchmark <cpu|gpu> <curve> <n> <num_samples> <num_commitments> <element_nbytes> <verbose>
+# - curve: the desired curve: curve25519, bn254, bls12_381, grumpkin
 # - n: the size of the multiexponentiation vector (or the sequence length).
 # - num_samples: the number of times to run the benchmark.
 # - num_commitments: the number of commitments to generate.
 # - element_nbytes: the number of bytes of each element in the vector (exponent size).
 # - verbose: whether to print the results of each run.
-bazel run -c opt //benchmark/multi_commitment:benchmark -- gpu 1000 5 1 32 1
+bazel run -c opt //benchmark/multi_commitment:benchmark gpu bn254 1000 10 1 32 0
 ```
 
 </details>
