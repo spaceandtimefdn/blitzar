@@ -86,7 +86,7 @@ struct params {
   params(int argc, char* argv[]) {
     status = 0;
 
-    if (argc < 7) {
+    if (argc < 8) {
       std::cerr << "Usage: benchmark " << "<cpu|gpu> " << "<curve> " << "<n> " << "<num_samples> "
                 << "<num_commitments> " << "<element_nbytes> " << "<verbose>\n";
       status = -1;
