@@ -204,7 +204,7 @@ static void run_benchmark(std::unique_ptr<mtxpp2::partition_table_accessor<U>>& 
     auto t2 = std::chrono::steady_clock::now();
 
     auto duration_compute =
-        std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() / 1e6;
+        std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1e6;
     durations.push_back(duration_compute);
     mean_duration_compute += duration_compute / num_samples;
   }
