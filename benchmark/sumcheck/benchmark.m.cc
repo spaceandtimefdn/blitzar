@@ -26,6 +26,8 @@
 #include "sxt/base/num/fast_random_number_generator.h"
 #include "sxt/execution/async/future.h"
 #include "sxt/execution/schedule/scheduler.h"
+#include "sxt/fieldgk/random/element.h"
+#include "sxt/fieldgk/realization/field.h"
 #include "sxt/memory/management/managed_array.h"
 #include "sxt/proof/sumcheck/chunked_gpu_driver.h"
 #include "sxt/proof/sumcheck/cpu_driver.h"
@@ -59,6 +61,8 @@ static bool read_params(params& p, int argc, char* argv[]) noexcept {
   s = {argv[1]};
   if (s == "curve25519") {
     p.field = "curve25519";
+  } else if (s == "bn254") {
+    p.field = "bn254";
   } else {
     baser::panic("invalid scalar field: {}\n", s);
   }
@@ -199,6 +203,11 @@ int main(int argc, char* argv[]) {
       s25rn::generate_random_element(element, rng);
     };
     run_benchmark<s25t::element>(p, generator);
+  } else if (p.field == "bn254") {
+    auto generator = [](fgkt::element& element, basn::fast_random_number_generator& rng) {
+      fgkrn::generate_random_element(element, rng);
+    };
+    run_benchmark<fgkt::element>(p, generator);
   } else {
     baser::panic("unsupported scalar field: {}", p.field);
   }
