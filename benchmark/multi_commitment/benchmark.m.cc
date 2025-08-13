@@ -45,6 +45,14 @@
 #include "sxt/curve_bng1/type/conversion_utility.h"
 #include "sxt/curve_bng1/type/element_affine.h"
 #include "sxt/curve_bng1/type/element_p2.h"
+#include "sxt/curve_g1/operation/add.h"
+#include "sxt/curve_g1/operation/compression.h"
+#include "sxt/curve_g1/operation/double.h"
+#include "sxt/curve_g1/operation/neg.h"
+#include "sxt/curve_g1/random/element_p2.h"
+#include "sxt/curve_g1/type/compressed_element.h"
+#include "sxt/curve_g1/type/conversion_utility.h"
+#include "sxt/curve_g1/type/element_p2.h"
 #include "sxt/memory/management/managed_array.h"
 #include "sxt/multiexp/base/exponent_sequence.h"
 #include "sxt/ristretto/base/byte_conversion.h"
@@ -127,6 +135,9 @@ struct params {
     } else if (curve_view == "bn254") {
       curve = "bn254";
       return;
+    } else if (curve_view == "bls12_381") {
+      curve = "bls12_381";
+      return;
     }
 
     std::cerr << "invalid curve: " << curve_view << "\n";
@@ -163,6 +174,17 @@ static void print_result(uint64_t num_commitments,
   size_t index = 0;
   for (auto& e : elements) {
     std::cout << index++ << ": {" << e.X << ", " << e.Y << "}" << "\n";
+  }
+}
+
+//--------------------------------------------------------------------------------------------------
+// print_result
+//--------------------------------------------------------------------------------------------------
+static void print_result(uint64_t num_commitments,
+                         memmg::managed_array<cg1t::compressed_element> elements) noexcept {
+  size_t index = 0;
+  for (auto& e : elements) {
+    std::cout << index++ << ": " << e << "\n";
   }
 }
 
@@ -300,6 +322,14 @@ int main(int argc, char* argv[]) {
   } else {
     std::cerr << "Unsupported curve: " << p.curve << "\n";
     return -1;
+  }
+  else if (p.curve == "bls12_381") {
+    auto generator = [](cg1t::element_p2& element, unsigned i) {
+      basn::fast_random_number_generator rng{i + 1, i + 2};
+      cg1rn::generate_random_element(element, rng);
+    };
+
+    run_benchmark<cg1t::element_p2, cg1t::compressed_element>(p, generator);
   }
 
   return 0;
