@@ -176,9 +176,9 @@ static void print_elements(basct::cspan<cgkt::element_p2> elements) noexcept {
 // run_benchmark
 //--------------------------------------------------------------------------------------------------
 template <bascrv::element T, class U>
-double run_benchmark(std::unique_ptr<mtxpp2::partition_table_accessor<U>>& accessor,
-                     unsigned num_samples, unsigned num_outputs, unsigned element_num_bytes,
-                     unsigned n, bool verbose) {
+static void run_benchmark(std::unique_ptr<mtxpp2::partition_table_accessor<U>>& accessor,
+                          unsigned num_samples, unsigned num_outputs, unsigned element_num_bytes,
+                          unsigned n, bool verbose) {
 
   memmg::managed_array<uint8_t> exponents;
   fill_exponents(exponents, element_num_bytes, num_outputs, n);
@@ -210,22 +210,45 @@ double run_benchmark(std::unique_ptr<mtxpp2::partition_table_accessor<U>>& acces
   }
 
   // run benchmark
-  double times = 0.0;
+  std::vector<double> durations;
+  double mean_duration_compute = 0.0;
+
   for (unsigned i = 0; i < num_samples; ++i) {
     auto t1 = std::chrono::steady_clock::now();
+
     auto fut = mtxpp2::async_multiexponentiate<T>(res, *accessor, output_bit_widths, output_lengths,
                                                   exponents);
     xens::get_scheduler().run();
+
     auto t2 = std::chrono::steady_clock::now();
-    auto elapse = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
-    times += elapse.count() / 1e3;
+
+    auto duration_compute =
+        std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1e6;
+    durations.push_back(duration_compute);
+    mean_duration_compute += duration_compute / num_samples;
   }
 
+  double std_deviation = 0;
+
+  for (int i = 0; i < num_samples; ++i) {
+    std_deviation += pow(durations[i] - mean_duration_compute, 2.);
+  }
+
+  std_deviation = sqrt(std_deviation / num_samples);
+
+  double data_throughput = n * num_outputs / mean_duration_compute;
+
+  std::cout << "compute duration (s) : " << std::fixed << mean_duration_compute << std::endl;
+  std::cout << "compute std deviation (s) : " << std::fixed << std_deviation << std::endl;
+  std::cout << "throughput (exponentiations / s) : " << std::scientific << data_throughput
+            << std::endl;
+
   if (verbose) {
+    std::println("===== result");
     print_elements(res);
   }
 
-  return times / num_samples;
+  std::println("********************************************");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -267,39 +290,38 @@ int main(int argc, char* argv[]) {
   }
 
   // set up data
-  std::println("n = {}", n);
-  std::println("num_samples = {}", num_samples);
-  std::println("num_outputs = {}", num_outputs);
-  std::println("element_num_bytes = {}", element_num_bytes);
+  double table_size = (num_outputs * n * element_num_bytes) / 1024.;
+
+  std::println("===== benchmark results");
+  std::println("backend : gpu");
+  std::println("curve : {}", curve_str);
+  std::println("commitment length : {}", n);
+  std::println("number of commitments : {}", num_outputs);
+  std::println("element_nbytes : {}", element_num_bytes);
+  std::println("table_size (MB) : {}", table_size);
+  std::println("num_exponentations : {}", (num_outputs * n));
+  std::println("********************************************");
 
   if (curve_str == "curve25519") {
-    std::println("running {} benchmark...", curve_str);
     auto accessor = make_partition_table_accessor<c21t::compact_element, c21t::element_p3>(
         n, curve25519_generator);
-    const auto average_time = run_benchmark<c21t::element_p3>(accessor, num_samples, num_outputs,
-                                                              element_num_bytes, n, verbose);
-    std::println("compute duration (s): {}", average_time);
+    run_benchmark<c21t::element_p3>(accessor, num_samples, num_outputs, element_num_bytes, n,
+                                    verbose);
   } else if (curve_str == "bls12_381" || curve_str == "bls12-381") {
-    std::println("running {} benchmark...", curve_str);
     auto accessor = make_partition_table_accessor<cg1t::compact_element, cg1t::element_p2>(
         n, bls12_381_generator);
-    const auto average_time = run_benchmark<cg1t::element_p2>(accessor, num_samples, num_outputs,
-                                                              element_num_bytes, n, verbose);
-    std::println("compute duration (s): {}", average_time);
+    run_benchmark<cg1t::element_p2>(accessor, num_samples, num_outputs, element_num_bytes, n,
+                                    verbose);
   } else if (curve_str == "bn254") {
-    std::println("running {} benchmark...", curve_str);
     auto accessor =
         make_partition_table_accessor<cn1t::compact_element, cn1t::element_p2>(n, bn254_generator);
-    const auto average_time = run_benchmark<cn1t::element_p2>(accessor, num_samples, num_outputs,
-                                                              element_num_bytes, n, verbose);
-    std::println("compute duration (s): {}", average_time);
+    run_benchmark<cn1t::element_p2>(accessor, num_samples, num_outputs, element_num_bytes, n,
+                                    verbose);
   } else if (curve_str == "grumpkin") {
-    std::println("running {} benchmark...", curve_str);
     auto accessor = make_partition_table_accessor<cgkt::compact_element, cgkt::element_p2>(
         n, grumpkin_generator);
-    const auto average_time = run_benchmark<cgkt::element_p2>(accessor, num_samples, num_outputs,
-                                                              element_num_bytes, n, verbose);
-    std::println("compute duration (s): {}", average_time);
+    run_benchmark<cgkt::element_p2>(accessor, num_samples, num_outputs, element_num_bytes, n,
+                                    verbose);
   } else {
     std::println("curve not supported");
   }
